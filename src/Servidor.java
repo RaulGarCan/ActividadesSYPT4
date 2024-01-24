@@ -5,7 +5,7 @@ import java.net.Socket;
 public class Servidor {
     public static void main(String[] args) {
         try {
-            ServerSocket server = new ServerSocket(5555);
+            ServerSocket server = new ServerSocket(5556);
             while(true){
                 Socket conexion = server.accept();
                 System.out.println("conectado");
@@ -34,11 +34,15 @@ public class Servidor {
                             resultado = null;
                             break;
                     }
-                    OutputStream out = conexion.getOutputStream();
-                    BufferedWriter escribir = new BufferedWriter(new OutputStreamWriter(out));
-                    escribir.write(resultado);
-                    escribir.flush();
-                    escribir.close();
+                    if(resultado!=null){
+                        OutputStream out = conexion.getOutputStream();
+                        BufferedWriter escribir = new BufferedWriter(new OutputStreamWriter(out));
+                        escribir.write(resultado);
+                        escribir.flush();
+                        escribir.close();
+                    } else {
+                        conexion.close();
+                    }
                 } catch (ClassNotFoundException e) {
                     throw new RuntimeException(e);
                 }
