@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class Cliente {
     public static void main(String[] args) {
         try {
-            Socket cliente = new Socket("localhost",5556);
+            Socket cliente = new Socket("localhost",5555);
             boolean ejecucion = true;
             while (ejecucion) {
                 OutputStream out = cliente.getOutputStream();
