@@ -44,14 +44,15 @@ public class Cliente {
                 escribir.flush();
                 if(ejecucion) {
                     InputStream in = cliente.getInputStream();
-                    BufferedReader leer = new BufferedReader(new InputStreamReader(in));
-                    System.out.println(leer.readLine());
+                    ObjectInputStream leer = new ObjectInputStream(in);
+                    int resultado = Integer.parseInt(leer.readObject().toString());
+                    System.out.println(resultado);
                 } else {
                     escribir.close();
                 }
             }
             cliente.close();
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }

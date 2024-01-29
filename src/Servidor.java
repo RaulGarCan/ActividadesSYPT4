@@ -42,67 +42,79 @@ public class Servidor implements Runnable {
 
     @Override
     public void run() {
+        boolean ejecucion = true;
         System.out.println("conectado");
-        InputStream in;
-        try {
-            in = conexion.getInputStream();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+        while (ejecucion) {
+            InputStream in;
+            try {
+                in = conexion.getInputStream();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            ObjectInputStream leer;
+            try {
+                leer = new ObjectInputStream(in);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            try {
+                Operando op;
+                try {
+                    op = (Operando) leer.readObject();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                System.out.println(op.getOp1() + " " + op.getOp2());
+                Operador operador;
+                try {
+                    operador = (Operador) leer.readObject();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                System.out.println(operador.name());
+                String resultado;
+                switch (operador.name().toLowerCase()) {
+                    case "suma":
+                        resultado = String.valueOf(sumar(op.getOp1(), op.getOp2()));
+                        break;
+                    case "resta":
+                        resultado = String.valueOf(restar(op.getOp1(), op.getOp2()));
+                        break;
+                    case "multiplicacion":
+                        resultado = String.valueOf(multiplicar(op.getOp1(), op.getOp2()));
+                        break;
+                    case "division":
+                        resultado = String.valueOf(dividir(op.getOp1(), op.getOp2()));
+                        break;
+                    default:
+                        ejecucion = false;
+                        resultado = null;
+                        break;
+                }
+                OutputStream out;
+                try {
+                    out = conexion.getOutputStream();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                ObjectOutputStream escribir = new ObjectOutputStream(out);
+                try {
+                    if(ejecucion){
+                        escribir.writeObject(resultado);
+                        escribir.flush();
+                    } else {
+                        escribir.close();
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } catch (ClassNotFoundException | IOException e) {
+                throw new RuntimeException(e);
+            }
         }
-        ObjectInputStream leer;
         try {
-            leer = new ObjectInputStream(in);
+            conexion.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        try {
-            Operando op;
-            try {
-                op = (Operando) leer.readObject();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            System.out.println(op.getOp1()+" "+ op.getOp2());
-            Operador operador;
-            try {
-                operador = (Operador) leer.readObject();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            System.out.println(operador.name());
-            String resultado;
-            switch (operador.name().toLowerCase()){
-                case "suma":
-                    resultado = String.valueOf(sumar(op.getOp1(),op.getOp2()));
-                    break;
-                case "resta":
-                    resultado = String.valueOf(restar(op.getOp1(),op.getOp2()));
-                    break;
-                case "multiplicacion":
-                    resultado = String.valueOf(multiplicar(op.getOp1(),op.getOp2()));
-                    break;
-                case "division":
-                    resultado = String.valueOf(dividir(op.getOp1(), op.getOp2()));
-                    break;
-                default:
-                    resultado = null;
-                    break;
-            }
-            OutputStream out;
-            try {
-                out = conexion.getOutputStream();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            BufferedWriter escribir = new BufferedWriter(new OutputStreamWriter(out));
-            try {
-                escribir.write(resultado);
-                escribir.flush();
-                escribir.close();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
