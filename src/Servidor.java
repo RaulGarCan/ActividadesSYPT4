@@ -8,7 +8,7 @@ public class Servidor implements Runnable {
         this.conexion = conexion;
     }
     public static void main(String[] args) {
-        ServerSocket server = null;
+        ServerSocket server;
         try {
             server = new ServerSocket(5555);
         } catch (IOException e) {
@@ -43,7 +43,7 @@ public class Servidor implements Runnable {
     @Override
     public void run() {
         System.out.println("conectado");
-        InputStream in = null;
+        InputStream in;
         try {
             in = conexion.getInputStream();
         } catch (IOException e) {
