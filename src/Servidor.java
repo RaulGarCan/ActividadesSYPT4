@@ -8,7 +8,7 @@ public class Servidor implements Runnable {
         this.conexion = conexion;
     }
     public static void main(String[] args) {
-        ServerSocket server = null;
+        ServerSocket server;
         try {
             server = new ServerSocket(5555);
         } catch (IOException e) {
