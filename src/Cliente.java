@@ -45,7 +45,7 @@ public class Cliente {
                 if(ejecucion) {
                     InputStream in = cliente.getInputStream();
                     ObjectInputStream leer = new ObjectInputStream(in);
-                    int resultado = Integer.parseInt(leer.readObject().toString());
+                    double resultado = Double.parseDouble(leer.readObject().toString());
                     System.out.println(resultado);
                 } else {
                     escribir.close();
